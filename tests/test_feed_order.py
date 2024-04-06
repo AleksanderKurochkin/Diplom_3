@@ -1,5 +1,3 @@
-import time
-
 import allure
 from base.BaseTest import BaseTest
 
@@ -40,7 +38,7 @@ class TestMainFunction(BaseTest):
         assert current_counter == f"{int(initial_counter) + 1}"
 
     @allure.title('После оформления заказа его номер появляется в разделе В работе.')
-    @allure.description('Проверяем раздел "В работе сразу после создания заказа')
+    @allure.description('Проверяем раздел "В работе" сразу после создания заказа')
     def test_order_in_work(self):
         self.login_page.login_user()
         self.order_feed_page.click_button_designer()
@@ -48,5 +46,23 @@ class TestMainFunction(BaseTest):
         self.designer_page.click_button_create_order()
         number_order = self.designer_page.get_number_order()
         self.order_feed_page.open_order_feed_page()
-        number_order_in_work = self.order_feed_page.get_number_order_in_work()
-        assert number_order in number_order_in_work
+        number_order_in_work = self.order_feed_page.get_number_order_in_work(number_order)
+        assert number_order_in_work
+
+    @allure.title('Проверяем что заказ пользователя из "Истории заказов" отображается на странице "Лента заказов".')
+    @allure.description('Делаем заказ, берем из истории номер последнего заказа и проверяем его на странице "Лента '
+                        'заказов"')
+    def test_order_in_work(self):
+        self.login_page.login_user()
+        self.order_feed_page.click_button_designer()
+        self.designer_page.add_ingredient_bread()
+        self.designer_page.click_button_create_order()
+        self.designer_page.click_button_exit_window_details()
+        self.designer_page.click_button_personal_account()
+        self.personal_account.click_button_history_order()
+        order = self.personal_account.get_number_last_order()
+        self.order_feed_page.open_order_feed_page()
+        assert self.order_feed_page.check_number_order_in_feed_order(order[1:])
+
+
+

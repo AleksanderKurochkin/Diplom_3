@@ -71,7 +71,7 @@ class DesignerPage(BasePage):
 
     @allure.step('Получаем номер заказа')
     def get_number_order(self):
-        order_number = self.get_text_from_element(self.NUMBER_ORDER)
+        order_number = self.invisibility_of_element(self.NUMBER_ORDER, "9999")
         return order_number
 
 

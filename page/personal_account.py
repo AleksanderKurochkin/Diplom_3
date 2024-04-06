@@ -4,8 +4,9 @@ import allure
 
 
 class PersonalAccount(BasePage):
-    BUTTON_HISTORY_ORDER = 'xpath', '//a[text() = "История заказов"]'
-    BUTTON_EXIT = 'xpath', '//button[text() = "Выход"]'
+    BUTTON_HISTORY_ORDER = ('xpath', '//a[text() = "История заказов"]')
+    BUTTON_EXIT = ('xpath', '//button[text() = "Выход"]')
+    LAST_ORDER = ("css selector", "ul[class*='profileList']>li:last-child>a>div>p[class*='digits']")
 
     @allure.step('Проверяем, что открылось окно личного кабинета')
     def check_window_personal_account(self):
@@ -20,6 +21,11 @@ class PersonalAccount(BasePage):
     @allure.step('Нажимаем на кнопку "Выход"')
     def click_button_exit(self):
         self.click_on_element(self.BUTTON_EXIT)
+
+    @allure.step('Получаем номер последнего заказа')
+    def get_number_last_order(self):
+        return self.get_text_from_element(self.LAST_ORDER)
+
 
 
 

@@ -29,7 +29,6 @@ class BasePage:
         element = self.wait.until(EC.visibility_of_element_located(locator))
         element.click()
 
-
     def get_current_url(self):
         return self.driver.current_url
 
@@ -41,7 +40,13 @@ class BasePage:
         return actual_url == expected_url
 
     def find_element(self, locator):
-        return self.driver.find_element(*locator)
+        element = self.wait.until(EC.presence_of_element_located(locator))
+        return element
+
+    def find_elements(self, locator, timeout=10):
+        wait = WebDriverWait(self.driver, timeout)
+        elements = wait.until(EC.presence_of_all_elements_located(locator))
+        return elements
 
     def get_url_with_wait(self, url):
         self.wait.until(EC.url_to_be(url))
@@ -69,7 +74,11 @@ class BasePage:
         actions = ActionChains(self.driver)
         actions.drag_and_drop(source_element, target_element).perform()
 
-
-
-
-
+    def invisibility_of_element(self, locator, text_content="text_content"):
+        self.wait.until(
+            lambda driver: driver.find_element(*locator).text != text_content
+        )
+        element = self.wait.until(
+            EC.visibility_of_element_located(locator)
+        )
+        return element.get_attribute("textContent")

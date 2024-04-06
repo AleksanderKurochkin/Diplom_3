@@ -1,3 +1,5 @@
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from page.base_page import BasePage
 from base.links import Links
 import allure
@@ -5,12 +7,18 @@ import allure
 
 class OrderFeedPage(BasePage):
     BUTTON_DESIGNER = ('xpath', '//p[text() = "Конструктор"]')
-    BUTTON_FIRST_ORDER = ('xpath', '(//a[@class="OrderHistory_link__1iNby"] | //a[@class="p-6 mb-4 mr-2 order-card_order__3rqYV"])[1]')
+    BUTTON_FIRST_ORDER = ('xpath', '(//a[@class="OrderHistory_link__1iNby"] | //a[@class="p-6 mb-4 mr-2 '
+                                   'order-card_order__3rqYV"])[1]')
     WINDOW_DETAILS_ORDER = ('xpath', '//p[text() = "Cостав"]')
     NAME_WINDOW_DETAILS_ORDER = "Cостав"
-    COUNT_ALL_ORDER = ('xpath', '(//p[contains(@class, "OrderFeed_number")] | //p[@class="text text_type_digits-large feed-info_content__3s65D"])[1]')
-    COUNT_TODAY_ORDER = ('xpath', '(//p[contains(@class, "OrderFeed_number")] | //p[@class="text text_type_digits-large feed-info_content__3s65D"])[2]')
-    NUMBER_ORDER_IN_WORK = ('xpath', '(//ul[contains(@class, "OrderFeed_orderListReady")]//li | (//ul[@class="pt-6  feed-info_list__1JWvG"])[1])')
+    COUNT_ALL_ORDER = ('xpath', '(//p[contains(@class, "OrderFeed_number")] | //p[@class="text text_type_digits-large '
+                                'feed-info_content__3s65D"])[1]')
+    COUNT_TODAY_ORDER = ('xpath', '(//p[contains(@class, "OrderFeed_number")] | //p[@class="text '
+                                  'text_type_digits-large feed-info_content__3s65D"])[2]')
+    NUMBER_ORDER_IN_WORK = ('xpath', '(//ul[contains(@class, "OrderFeed_orderListReady")]//li | (//ul[@class="pt-6  '
+                                     'feed-info_list__1JWvG"])[1])')
+    LIST_ORDERS = ("xpath", "//ul[contains(@class, 'OrderFeed_orderList__cBvyi')]//li[contains(concat(' ', @class, "
+                            "' '), ' text text_type_digits-default mb-2 ')]")
 
     @allure.step('Открываем страницу ленты заказов')
     def open_order_feed_page(self):
@@ -45,10 +53,18 @@ class OrderFeedPage(BasePage):
         return counter
 
     @allure.step('Получаем номер заказа "В работе"')
-    def get_number_order_in_work(self):
-        counter = self.get_text_from_element(self.NUMBER_ORDER_IN_WORK)
-        return counter
+    def get_number_order_in_work(self, number_order):
+        WebDriverWait(self.driver, 10).until(
+            EC.text_to_be_present_in_element_value(self.NUMBER_ORDER_IN_WORK, number_order))
 
-
+    @allure.step('Проверяем номер заказа в "Ленте заказов"')
+    def check_number_order_in_feed_order(self, expected_order):
+        order_list_items = self.find_elements(self.LIST_ORDERS)
+        found = False
+        for item in order_list_items:
+            if item.text == expected_order:
+                found = True
+                break
+        return found
 
 

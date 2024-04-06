@@ -1,5 +1,3 @@
-import time
-
 import allure
 from base.BaseTest import BaseTest
 
@@ -40,9 +38,7 @@ class TestMainFunction(BaseTest):
     def test_count_ingredient(self):
         self.designer_page.open_designer_page()
         initial_counter = self.designer_page.get_ingredient_counter()
-        time.sleep(3)
         self.designer_page.add_ingredient_bread()
-        time.sleep(3)
         self.designer_page.get_ingredient_counter()
         current_counter = self.designer_page.get_ingredient_counter()
         assert current_counter == f"{int(initial_counter) + 2}"
