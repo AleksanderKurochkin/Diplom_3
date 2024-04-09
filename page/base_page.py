@@ -1,6 +1,5 @@
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.common.action_chains import ActionChains
 import allure
 
 
@@ -58,21 +57,10 @@ class BasePage:
         )
         return element.get_attribute("textContent")
 
-    def url_with_wait(self, url):
-        self.wait.until(EC.url_to_be(url))
-        return url
-
     def check_element_disappears(self, locator):
         element = self.wait.until(EC.invisibility_of_element_located(locator))
         is_element_disappeared = not element.is_displayed()
         return is_element_disappeared
-
-    @allure.step('Добавить ингредиент')
-    def add_ingredient(self, locator_one, locator_two):
-        source_element = self.driver.find_element(*locator_one)
-        target_element = self.driver.find_element(*locator_two)
-        actions = ActionChains(self.driver)
-        actions.drag_and_drop(source_element, target_element).perform()
 
     def invisibility_of_element(self, locator, text_content="text_content"):
         self.wait.until(
